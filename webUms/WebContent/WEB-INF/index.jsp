@@ -35,7 +35,7 @@
         </div>  
         <div style="margin-bottom:10px;">  
             <input class="easyui-textbox" type="text" id="logyzm" style="width:50%;height:30px;padding:12px;float:right;"> 
-            <a href="javascript:;"  onclick="getPic();" >
+            <a href="javascript:;"  @click="getPic();" >
                 <img id="codePic"  style="float:right;"/>
             </a>  
         </div>  
