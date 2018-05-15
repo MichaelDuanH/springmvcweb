@@ -6,6 +6,11 @@
   <script type="text/javascript" src="js/easyui/jquery.easyui.min.js"></script>
   <script type="text/javascript" src="js/easyui/jquery.cookie.js"></script>
   <script type="text/javascript" src="js/easyui/jQueryJSON.js"></script>
+  <script type="text/javascript" src="js/vue/vue.min.js"></script>
+  <script type="text/javascript" src="js/vue/vue.js"></script>
+  <script type="text/javascript" src="js/bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap/js/bootstrap.js"></script>
+  <link href="js/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
   <link href="js/easyui/style/themes/icon.css" rel="stylesheet" type="text/css" />
   <link href="js/easyui/style/themes/default/easyui.css" rel="stylesheet" type="text/css" />
   <link href="css/base.css" rel="stylesheet" type="text/css"/>

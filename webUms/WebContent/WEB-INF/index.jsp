@@ -6,6 +6,11 @@
 <script type="text/javascript" src="main/js/easyui/jquery.min.js"></script>
 <script type="text/javascript" src="main/js/easyui/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="main/js/easyui/jquery.cookie.js"></script>
+<script type="text/javascript" src="main/js/vue/vue.min.js"></script>
+<script type="text/javascript" src="main/js/vue/vue.js"></script>
+<script type="text/javascript" src="main/js/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="main/js/bootstrap/js/bootstrap.js"></script>
+<link href="main/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 <link href="main/js/easyui/style/themes/icon.css" rel="stylesheet" type="text/css" />
 <link href="main/js/easyui/style/themes/default/easyui.css" rel="stylesheet" type="text/css" />
 <link href="main/js/easyui/style/easyui.css" rel="stylesheet" type="text/css" />
@@ -20,7 +25,8 @@
 </style>
 </head>  
  <body>  
-    <div class="easyui-window" title="登录"  style="width:400px;padding:20px 70px 50px 70px;">  
+   <div id="vueApp">
+    <div class="easyui-window" :title="loginTitle"  style="width:400px;padding:20px 70px 50px 70px;">  
         <div style="margin-bottom:10px">  
             <input class="easyui-textbox" id="logname" style="width:100%;height:30px;padding:12px" data-options="prompt:'登录用户名',iconCls:'icon-man',iconWidth:38">  
         </div> 
@@ -35,14 +41,21 @@
         </div>  
         <div>  
           <a href="javascript:;" onclick="dologin()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" style="padding:5px 0px;width:100%;">  
-              <span style="font-size:14px;">登录</span>  
+              <span style="font-size:14px;">{{loginTitle}}</span>  
           </a> 
           <span><img id="qrCode" style="float:right; margin-botton:10px;" /></span>
         </div> 
         
     </div>
-        
+  </div>   
   <script type="text/javascript">
+  
+  var vm = new Vue({
+	  el:"#vueApp",
+	  data:{
+		  loginTitle:"登录"
+	  }
+  })
   window.timeOut = '${base.code}';
   changeVeryfy();
   var verCode;
