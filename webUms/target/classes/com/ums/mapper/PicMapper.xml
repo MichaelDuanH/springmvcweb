@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ums.dao.IPicDao">
+   <select id="getPic" resultType="com.ums.entity.Picture">
+		SELECT id, pic_name as picName, url FROM T_PICS
+   </select>
+   <insert id="insert">
+      INSERT INTO T_PICS 
+      (
+	       pic_name,
+	       url
+       ) 
+       VALUES (
+	       #{pic.picName},
+	       #{pic.url}
+      );
+   </insert>
+</mapper>

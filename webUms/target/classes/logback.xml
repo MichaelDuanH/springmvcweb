@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://ch.qos.logback/xml/ns/logback"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ch.qos.logback/xml/ns/logback http://ch.qos.logback/xml/ns/logback/logback.xsd">
+
+	<!-- 日志级别 OFF、FATAL、ERROR、WARN、INFO、DEBUG、TRACE、ALL -->
+	<property name="logLevel" value="INFO" />
+	<!-- 日志根目录 ../log /app/jetty/logs/dcasLog-->
+	<property name="logHome" value="/app/applogs/testpro" />
+
+	
+
+	<!-- 控制台输出 -->
+	<appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+		</layout>
+	</appender>
+
+	<!-- 按照每天生成日志文件 -->
+	<appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Prudent>true</Prudent>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 日志文件输出的文件名 -->
+			<FileNamePattern>${logHome}/%d{yyyy-MM-dd}/test_pro_%i.log</FileNamePattern>
+			<!-- 日志文件保留天数 -->
+			<MaxHistory>30</MaxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy  class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+		        <maxFileSize>100MB</maxFileSize>  
+		    </timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<!-- 格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+		</layout>
+	</appender>
+
+	<root level="${logLevel}">
+		<appender-ref ref="consoleAppender" />
+		<appender-ref ref="fileAppender" />
+	</root>
+
+</configuration>

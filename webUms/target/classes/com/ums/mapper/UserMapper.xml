@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ums.dao.IUserDao">
+
+   <select id="selectUserByName" resultType="com.ums.entity.User">
+       SELECT user_id as userId,phone,user_code as userCode,user_name as userName,user_age as userAge, pas as pas,login_id loginId,log_tims logTimes FROM t_user_lg where user_name = #{userName}
+   </select>
+   
+   <select id="selectUserById" resultType="com.ums.entity.User">
+		SELECT user_id,user_name,user_age,pas FROM t_user_og WHERE user_id = #{userId}
+   </select>
+   <select id="getUsersByMTopNumAndId" resultType="com.ums.entity.User">
+    <![CDATA[
+		  SELECT USER_ID userId, 
+             USER_NAME userName, 
+             USER_AGE userAge, 
+             DEPT_CODE deptCode, 
+             USER_CODE userCode, 
+             USER_MAIL userMail, 
+             SEX sex, 
+             PHONE phone, 
+             ID_NO idNo,
+             ADRESS adress,
+             PERSON_TYPE_CODE personTypeCode,
+             IS_COMMIS isCommis,
+             COMMIS_DATE commisDate,
+             CREATE_TM createTm
+             FROM t_user_og  WHERE SYNC='0' ]]>
+		<if test="userId != null">
+			<![CDATA[ AND USER_ID > #{userId} ]]>
+		</if>
+		<![CDATA[ ORDER BY USER_ID LIMIT #{topNum} ]]>
+   </select>
+   
+   <update id="updateOfMarkProcessed">
+		<![CDATA[
+			UPDATE t_user_og SET SYNC = '1' ,PROCESS_TM = NOW() WHERE USER_ID = #{userId}
+		]]>
+	</update>
+   
+ 
+   
+   
+   <insert id="addBatch" parameterType="java.util.ArrayList">
+      INSERT INTO t_user_og
+        (USER_ID,
+        USER_NAME,
+        USER_AGE,
+        DEPT_CODE,
+        USER_CODE,
+        USER_MAIL,
+        AMOUNT,
+        SEX,
+        PHONE,
+        ID_NO,
+        ADRESS,
+        REMARK,
+        CREATE_TM
+        )
+      VALUES 
+     <foreach item="user" collection="users"  separator="," >
+     (
+        #{user.userId,jdbcType=VARCHAR},
+        #{user.userName,jdbcType=VARCHAR},
+        #{user.userAge,jdbcType=INTEGER},
+        #{user.deptCode,jdbcType=VARCHAR},
+        #{user.userCode,jdbcType=VARCHAR},
+        #{user.userMail,jdbcType=VARCHAR},
+        #{user.amount,jdbcType=DOUBLE},
+        #{user.sex,jdbcType=VARCHAR},
+        #{user.phone,jdbcType=VARCHAR},
+        #{user.idNo,jdbcType=VARCHAR},
+        #{user.adress,jdbcType=VARCHAR},
+        #{user.remark,jdbcType=VARCHAR},
+        #{user.createTm,jdbcType=VARCHAR}
+     )
+</foreach>
+</insert>
+
+
+
+   <insert id="addOrgBatch" parameterType="java.util.ArrayList">
+      INSERT INTO t_user_og
+        (USER_NAME,
+        USER_AGE,
+        DEPT_CODE,
+        USER_CODE,
+        USER_MAIL,
+        SEX,
+        PHONE,
+        ID_NO,
+        ADRESS,
+        CREATE_TM,
+        PERSON_TYPE_CODE,
+        IS_COMMIS,
+        COMMIS_DATE
+        )
+      VALUES 
+     <foreach item="user" collection="users"  separator="," >
+     (
+        #{user.userName,jdbcType=VARCHAR},
+        #{user.userAge,jdbcType=INTEGER},
+        #{user.deptCode,jdbcType=VARCHAR},
+        #{user.userCode,jdbcType=VARCHAR},
+        #{user.userMail,jdbcType=VARCHAR},
+        #{user.sex,jdbcType=VARCHAR},
+        #{user.phone,jdbcType=VARCHAR},
+        #{user.idNo,jdbcType=VARCHAR},
+        #{user.adress,jdbcType=VARCHAR},
+        #{user.createTm,jdbcType=VARCHAR},
+        #{user.personTypeCode,jdbcType=VARCHAR},
+        #{user.isCommis,jdbcType=VARCHAR},
+        #{user.commisDate,jdbcType=DATE}
+     )
+</foreach>
+</insert>
+   
+   <select id="allUsersPage" resultType="com.ums.entity.User">
+   	<![CDATA[
+       SELECT user_id as userId,
+        dept_code as deptCode, 
+        user_name as userName, 
+        user_age as userAge,
+        pas as pas,
+        user_code as userCode,
+        user_mail as userMail,
+        adress,
+        sex,
+        id_no as idNo,
+        is_commis as isCommis,
+        commis_date as commisDate,
+        person_type_code as personTypeCode,
+        remark,
+        phone,sync FROM t_user_og
+         where 	1 = 1]]>
+           <if test='user != null and user.userCode != null and user.userCode != "".toString()'> 
+                	<![CDATA[ and user_code = #{user.userCode} ]]>
+          </if>
+          <if test='user != null and user.userName != null and user.userName != "".toString()'> 
+                	<![CDATA[ and user_name = #{user.userName} ]]>
+          </if>
+   </select>
+   
+   <delete id="batchDeleteUsers" parameterType="com.ums.entity.User">
+        DELETE FROM t_user_og WHERE USER_CODE in
+        <foreach item="userCode" collection="users" open="(" separator="," close=")">
+            #{userCode}
+        </foreach>
+    </delete>
+    
+    <delete id="delBatchOriUsers" parameterType="com.ums.entity.User">
+       DELETE FROM t_user_og WHERE USER_CODE in
+        <foreach item="user" collection="users" open="(" separator="," close=")">
+            #{user.userCode}
+        </foreach>
+    </delete>
+    
+   <insert id="saveUser">
+       INSERT INTO t_user_og (
+            user_id,
+            dept_code,
+            user_name,
+            user_age,
+            pas,
+            user_code,
+            user_mail,
+            adress,
+            sex,
+            id_no,
+            phone,
+            person_type_code,
+            commis_date,
+            is_commis,
+            remark
+            ) VALUES (
+            #{user.userId},
+            #{user.deptCode},
+            #{user.userName},
+            #{user.userAge},
+            #{user.pas},
+            #{user.userCode},
+            #{user.userMail},
+            #{user.adress},
+            #{user.sex},
+            #{user.idNo},
+            #{user.phone},
+            #{user.personTypeCode},
+            #{user.commisDate},
+            #{user.isCommis},
+            #{user.remark}
+            )
+   </insert>
+   
+   
+   <delete id="delUser">
+       delete from t_user_og where user_id = #{userId}
+   </delete>
+   
+   <delete id="deleteAll">
+       delete from t_user_og
+   </delete>
+   
+   
+    <delete id="deleteOriAll">
+       delete from t_user_og
+   </delete>
+  
+   
+<!--    <delete id="delUsersByMonth">
+      delete from t_user_og where month = #{month}
+   </delete> -->
+   
+   <update id="updateUser">
+      update t_user_og set 
+       <if test='user.deptCode != null'> 
+            dept_code = #{user.deptCode},
+       </if>
+        <if test='user.userName != null'> 
+            user_name = #{user.userName},
+        </if>
+        <if test='user.userAge != null'> 
+            user_age = #{user.userAge},
+        </if>
+        <if test='user.newPass != null'> 
+            pas = #{user.newPass}
+        </if>
+         <if test='user.userCode != null'> 
+            user_code = #{user.userCode},
+         </if>
+         <if test='user.userMail != null'> 
+            user_mail = #{user.userMail},
+         </if>
+         <if test='user.adress != null'> 
+            adress =  #{user.adress},
+         </if>
+         <if test='user.sex != null'> 
+            sex = #{user.sex},
+         </if>
+         <if test='user.idNo != null'> 
+            id_no = #{user.idNo},
+         </if>
+         <if test='user.isCommis != null'> 
+            is_commis = #{user.isCommis},
+         </if>
+          <if test='user.commisDate != null'> 
+           <![CDATA[  commis_date = #{user.commisDate}, ]]>
+         </if>
+          <if test='user.personTypeCode != null'> 
+            person_type_code = #{user.personTypeCode}
+         </if>
+       where  1 = 1
+        <if test='user.userId != null and user.userId != "".toString()'> 
+            and user_id = #{user.userId} 
+        </if>
+    </update>
+    
+    <update id="updateUnique">
+         update t_user_og set 
+       <if test='user.deptCode != null'> 
+            dept_code = #{user.deptCode},
+       </if>
+        <if test='user.userName != null'> 
+            user_name = #{user.userName},
+        </if>
+        <if test='user.userAge != null'> 
+            user_age = #{user.userAge},
+        </if>
+        <if test='user.newPass != null'> 
+            pas = #{user.newPass}
+        </if>
+         <if test='user.userCode != null'> 
+            user_code = #{user.userCode},
+         </if>
+         <if test='user.userMail != null'> 
+            user_mail = #{user.userMail},
+         </if>
+         <if test='user.adress != null'> 
+            adress =  #{user.adress},
+         </if>
+         <if test='user.sex != null'> 
+            sex = #{user.sex},
+         </if>
+         <if test='user.idNo != null'> 
+            id_no = #{user.idNo},
+         </if>
+         <if test='user.phone != null'> 
+            phone= #{user.phone},
+         </if>
+         <if test='user.isCommis != null'> 
+            IS_COMMIS = #{user.isCommis},
+         </if>
+         <if test='user.personTypeCode != null'> 
+            PERSON_TYPE_CODE = #{user.personTypeCode},
+         </if>
+          <if test='user.commisDate != null'> 
+            commis_date = #{user.commisDate},
+         </if>
+         <if test='user.remark != null'> 
+            remark = #{user.remark}
+         </if>
+       where  1 = 1
+        <if test='user.userId != null and user.userId != "".toString()'> 
+            and user_id = #{user.userId} 
+        </if>
+    </update>
+    <select id="selectUserByConditions" resultType="com.ums.entity.User">
+        SELECT 
+        user_id as userId,
+        dept_code as deptCode, 
+        user_name as userName, 
+        user_age as userAge,
+        pas as pas,
+        user_code as userCode,
+        user_mail as userMail,
+        adress,
+        sex,
+        id_no as idNo,
+        phone 
+        FROM t_user_og
+        where  1 = 1
+          <if test='user.userCode != null and user.userCode != "".toString()'> 
+             and user_code = #{user.userCode}
+          </if>
+          <if test='user.idNo != null and user.idNo != "".toString()'> 
+             and id_no = #{user.idNo}
+          </if>
+          <if test='user.phone != null and user.phone != "".toString()'> 
+             and phone= #{user.phone}
+          </if>
+          <if test='user.deptCode != null and user.deptCode != "".toString()'> 
+             and dept_code= #{user.deptCode}
+          </if>
+     </select>
+     
+
+   
+   <update id="updateByUserName">
+      update t_user_lg set login_id = #{loginId}
+      <if test='logTimes != null'> 
+            , log_tims = #{logTimes}
+       </if>
+       where user_name = #{userName}
+   </update>
+   
+   <select id="searchByUserCode" resultType="com.ums.entity.User">
+      SELECT user_id as userId,user_name as userName,user_age as userAge, pas , user_code as userCode,user_mail as userMail, phone,dept_code deptCode, person_type_code personTypeCode, is_commis isCommis, commis_date commisDate FROM t_user_og where user_code = #{userCode}
+   </select>
+   
+   
+   <select id="searchByUserCodeAndId" resultType="com.ums.entity.User">
+      SELECT user_id as userId,user_name as userName,user_age as userAge, pas , user_code as userCode,user_mail as userMail, phone,dept_code deptCode FROM t_user_og where user_id = #{userId} and user_code = #{userCode}
+   </select>
+   
+   <select id="getTotalCount" resultType="java.lang.Integer">
+     select count(1) from t_user_og;
+   </select>
+   
+   <update id="reCalc">
+      update t_user_og set sync = '0';
+   </update>
+</mapper>

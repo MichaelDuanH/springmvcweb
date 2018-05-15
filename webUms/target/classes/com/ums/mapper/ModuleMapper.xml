@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ums.dao.IModelDao">
+   <select id="getModuleList" resultType="com.ums.entity.Module">
+		SELECT MODULE_ID moduleId,PARENT_ID parentId,text,ACTION_URL actionUrl 
+		   FROM t_module WHERE FIND_IN_SET(module_id,queryChildrenMenuInfo(#{parentId}));
+   </select>
+</mapper>
