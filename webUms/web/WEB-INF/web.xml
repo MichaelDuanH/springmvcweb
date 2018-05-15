@@ -11,7 +11,6 @@
        <param-name>log4jConfigLocation</param-name>
        <param-value>log4j.properties</param-value>
     </context-param>
-     
     <!-- Spring 容器加载 -->  
     <listener>  
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>  
