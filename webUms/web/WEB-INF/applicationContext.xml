@@ -32,25 +32,9 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
     
-  <!--  <bean
-            class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
-        <property name="messageConverters">
-            <list>
-                <ref bean="mappingJacksonHttpMessageConverter" />
-            </list>
-        </property>
-    </bean> -->
 
     <mvc:default-servlet-handler />
-    <!-- 启动Spring MVC的注解功能，完成请求和注解POJO的映射 -->
-  <!--   <bean
-            class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
-        <property name="messageConverters">
-            <list>
-                <ref bean="mappingJacksonHttpMessageConverter" />
-            </list>
-        </property>
-    </bean> -->
+
 
     <!-- 静态资源配置 -->
      <mvc:resources location="/base/" mapping="/base/**"></mvc:resources>
@@ -66,17 +50,8 @@
   
     <context:property-placeholder location="classpath*:properties/*.properties" />
     
-<!--     <mvc:interceptors>    
-	    <mvc:interceptor>    
-	        <mvc:mapping path="/*" /> 
-	        <bean class="com.sf.interceptor.CommonInterceptor"></bean>    
-	    </mvc:interceptor>  
-   </mvc:interceptors> -->
-    <!--系统定时任务-->
-  <!--    <task:executor id="executor" pool-size="5" />
-       <task:scheduler id="scheduler" pool-size="10" />
-       <task:annotation-driven executor="executor"
-       scheduler="scheduler" /> -->
+   <import resource="classpath:spring-content.xml"/>
+   <import resource="classpath:mybatis-spring.xml"/>
     <task:annotation-driven />
     <context:component-scan base-package="com.ums.*"/>
 </beans>
