@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>  
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page import="java.util.*" %>
-<%@ page import="com.sf.common.util.*" %>
+<%@ page import="com.ums.common.util.*" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>    
 <html>
   <head>
