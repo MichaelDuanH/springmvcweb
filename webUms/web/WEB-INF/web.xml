@@ -26,9 +26,9 @@
 	    <load-on-startup>1</load-on-startup>  
    </servlet> 
    
-    <listener>
+   <!--  <listener>
 		<listener-class>com.ums.listener.TaskStartListener</listener-class>
-	</listener>
+	</listener> -->
    <session-config> 
      <session-timeout>30</session-timeout> 
    </session-config> 

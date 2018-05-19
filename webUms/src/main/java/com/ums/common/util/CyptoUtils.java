@@ -40,7 +40,6 @@ public class CyptoUtils {
     		return data;
     	}
     }
-
     /**
      * DES算法，解密
      *
