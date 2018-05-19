@@ -25,7 +25,7 @@
 </head>  
  <body>  
    <div id="vueApp">
-    <form role="form" class="form-horizontal" id="loginForm">
+    <div role="form" class="form-horizontal" id="loginForm">
       <div class="form-group">
            <label for="logname" class="col-sm-2 control-label">用户</label>
 	           <div class="col-sm-10" style="width:430px">
@@ -56,10 +56,30 @@
             <button @click="dologin()" class="btn btn-default">{{loginTitle}}</button>
         </div>
     </div>
-    </form>
-  </div>   
-  <script type="text/javascript">
-  
+    </div>
+    
+        <div class="modal" id="my-modal-alert">  
+        <div class="modal-dialog">  
+            <div class="modal-content">  
+                <div class="modal-header">  
+                    <button type="button" class="close" data-dismiss="modal">  
+                        <span aria-hidden="true">×</span><span class="sr-only">Close</span>  
+                    </button>  
+                    <h4 class="modal-title" id="modal-title">提示</h4><span id="num"></span>  
+                </div>  
+                <!--/*modal-header*/-->  
+                <div class="modal-body">  
+                    <div id="modal_message"><span id="message">modal_message</span></div>  
+                </div>  
+                <!--/*modal-body*/-->  
+                <div class="modal-footer" id="modal-footer">  
+                    <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>  
+                </div>  
+            </div>  
+        </div>  
+      </div>
+   </div> 
+  <script>
   var vm = new Vue({
 	  el:"#vueApp",
 	  data:{
@@ -67,51 +87,59 @@
 		  logname:"",
 		  password:"",
 		  logyzm:"",
-		  timeOut:'${base.code}',
-		  ip:""
+		  verCode:"",
+		  timeOut:'${base.code}'
+	  },
+	  mounted:function(){
+		  $.ajax({
+				type : "get",
+				url : 'getIpAdr',
+				success : function(data) {
+					this.ip = data.trim();
+					$("#codePic").attr("src","http://"+ eval(this.ip) + ":8080/webUms/imageCode?flag="+Math.random());
+				}
+		  });
 	  },
 	  methods:{
-		  getIpAdr:function() {
+		  
+		  getPic:function() { 
 			  $.ajax({
 					type : "get",
 					url : 'getIpAdr',
 					success : function(data) {
-						this.ip = data.trim();
-						$("#codePic").attr("src","http://"+eval(this.ip)+":8080/webUms/imageCode?flag="+Math.random());
+						 $("#codePic").attr("src","http://"+ eval(data) + ":8080/webUms/imageCode?flag="+Math.random());
 					}
 			  });
 		  },
-		  changeVeryfy:function(){
+		  changeVeryfy:function() {
 			  $.ajax({
 					type : "get",
 					url : 'verCode',
 					success : function(data) {
-						$("#logyzm").val(data);
-						verCode = data;
+						/* $("#logyzm").val(data); */
+						this.verCode = data;
 					}
 				});
-			  this.getPic();
+			 this.getPic();
+		  }, 
+		  clearContent:function(ths) {
+			  ths.logname="";
+			  ths.password="";
+			  ths.logyzm="";
 		  },
-		  getPic:function() {  
-			  var that = this;
-			  if(!that.ip) {
-				  $.ajax({
-						type : "get",
-						url : 'getIpAdr',
-						success : function(data) {
-							that.ip = data.trim();
-						}
-				  });
-			  }
-		      $("#codePic").attr("src","http://"+ eval(that.ip) + ":8080/webUms/imageCode?flag="+Math.random());   
+		  showMsg:function(msg) {
+			  $("#my-modal-alert").modal("toggle");  
+	          $(".modal-backdrop").remove(); 
+	          $("#message").text(msg);  
 		  },
 		  dologin:function() {
-			  if(!this.logyzm ||  !this.logname || !this.password) {
-				  $.messager.alert('提示','请验证填写表单是否完整') ;
-				  return;
-			  }
-			  var data = {};
 			  var that = this;
+			  if(!that.logyzm ||  !that.logname || !that.password) {
+				    that.showMsg("请正确填写表单格式");
+				    that.clearContent(that);
+		            return;
+			  }
+			 
 			  $.ajax({
 					type : 'POST',
 					headers: {'cookies' : document.cookie },
@@ -119,28 +147,31 @@
 					dataType : 'json',
 					contentType: 'application/json',
 					data:JSON.stringify({
-						  'inputVerCode':this.logyzm,
-						  'userName':this.logname,
-						  'passWord':this.password,
-						  'loginId':this.uuid(10,70)}),
+						  'inputVerCode':that.logyzm,
+						  'userName':that.logname,
+						  'passWord':that.password,
+						  'loginId':that.uuid(10,70)}),
 					success : function(data) {
 						if(data.code == '200') {
 							  var param = (data.total)*360
 							  window.location.href="main/mainPage?total="+param+'&pv='+'${pageContext.request.getSession().getId()}';
-							/*   $.messager.alert('提示', data.rows); */
-						} else if(data.code == 'userNotExist'){
-							$.messager.alert('错误', data.rows);
-							that.changeVeryfy();
+						} else if(data.code == 'userNotExist') {
+							  that.changeVeryfy();
+							  that.showMsg("用户不存在");
+							  that.clearContent(that);
+							  
 						} else if (data.code == 'pwdErr') {
-							$.messager.alert('错误',data.rows);
-							that.changeVeryfy();
+							  that.changeVeryfy();
+							  that.showMsg("密码错误");
+							  that.clearContent(that);
 						} else if (data.code == 'validErr') {
-							$.messager.alert('错误', data.rows);
-							that.changeVeryfy();
+							  that.changeVeryfy();
+							  that.showMsg("验证码错误");
+							  that.clearContent(that);
 						}
-						return;
+						
 					}
-				});
+				})
 		  },
 		  
 		  uuid:function(len, radix) {
@@ -165,11 +196,10 @@
 			 }
 	  }
   })
-  vm.getPic();
-  vm.getIpAdr();
-  if(!$.cookie("logname")) {
+/*   if(!$.cookie("logname")) {
 	  $.cookie("logname", $("#logname").val(), {path: "/", expires: 7, secure:true});
-　　}
+　　} */
   </script>
+
  </body>  
 </html>
