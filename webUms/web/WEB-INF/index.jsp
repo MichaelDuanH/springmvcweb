@@ -167,7 +167,6 @@
   })
   vm.getPic();
   vm.getIpAdr();
-  
   if(!$.cookie("logname")) {
 	  $.cookie("logname", $("#logname").val(), {path: "/", expires: 7, secure:true});
 　　}
