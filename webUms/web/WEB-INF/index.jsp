@@ -103,7 +103,6 @@
 						}
 				  });
 			  }
-				 
 		      $("#codePic").attr("src","http://"+ eval(that.ip) + ":8080/webUms/imageCode?flag="+Math.random());   
 		  },
 		  dologin:function() {
